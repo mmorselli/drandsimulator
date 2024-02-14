@@ -2,7 +2,7 @@
 
 from helper import *
 
-attempts = 2000000
+attempts = 1999999 # how many rounds to extract (max 1999999)
 slice = attempts // 1000 # how often the results are displayed
 jackpotlimit = 80
 iterations = 5
