@@ -1,15 +1,10 @@
-import time
+# download and uncompress the dataset (drand.db) from https://cdn.lottorace.cloud/drand.rar
+
 from helper import *
 
-attempts = 10000
-slice = attempts // 10
+attempts = 2000000
+slice = attempts // 1000 # how often the results are displayed
 jackpotlimit = 80
+iterations = 5
 
-
-start_time = time.time()
-
-challenge(attempts,jackpotlimit,slice)
-
-end_time = time.time()
-execution_time = end_time - start_time
-print(f"executed in: {execution_time} seconds")
+challenge(attempts,jackpotlimit,slice,iterations)

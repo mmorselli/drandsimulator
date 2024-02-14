@@ -1,6 +1,7 @@
 import random
 import sqlite3
 import re
+import time
 
 def get_six_random_hex():
     hex_numbers = []
@@ -59,36 +60,42 @@ def cpubet(randomness_array):
     return unique_array
 
 
-def challenge(attempts,jackpotlimit,slice):
+def challenge(attempts, jackpotlimit, slice, iterations):
     cpu_win = 0
     user_win = 0
     tie = 0
     jackpot = 0
+    count = 0
+    total_attempts = (attempts * iterations)
 
-    for i in range(1,attempts+1):
-        randomness = get_randomness(i)
-        user_bet = get_six_random_hex()
-        user_randomness_array = hex_to_upper_case_array(randomness[0][0])
-        cpu_randomness_array = hex_to_upper_case_array(randomness[1][0])
-        cpu_bet = cpubet(user_randomness_array)
+    start_time = time.time()
 
-        user_score = getscore(user_randomness_array, user_bet)
-        cpu_score = getscore(cpu_randomness_array, cpu_bet)
+    for _ in range(iterations):
+        for i in range(1, attempts+1):
+            count += 1
+            randomness = get_randomness(i)
+            user_bet = get_six_random_hex()
+            user_randomness_array = hex_to_upper_case_array(randomness[0][0])
+            cpu_randomness_array = hex_to_upper_case_array(randomness[1][0])
+            cpu_bet = cpubet(user_randomness_array)
 
-        if user_score > cpu_score:
-            user_win += 1
-            if user_score >= jackpotlimit:
-                jackpot += 1
-        elif user_score < cpu_score:
-            cpu_win += 1
-        else:
-            tie += 1
+            user_score = getscore(user_randomness_array, user_bet)
+            cpu_score = getscore(cpu_randomness_array, cpu_bet)
 
-        if i % slice == 0:
-            jackpotpercentage = jackpot / i * 100
-            winpercentage = user_win / i * 100
-            losepercentage = cpu_win / i * 100
-            tiepercentage = tie / i * 100
-            print(f"{i}/{attempts} - User wins: {user_win} ({winpercentage:.2f}%) - CPU wins: {cpu_win} ({losepercentage:.2f}%) - Ties: {tie} ({tiepercentage:.2f}%) - Jackpots: {jackpot} ({jackpotpercentage:.2f}%)")
+            if user_score > cpu_score:
+                user_win += 1
+                if user_score >= jackpotlimit:
+                    jackpot += 1
+            elif user_score < cpu_score:
+                cpu_win += 1
+            else:
+                tie += 1
 
-
+            if count % slice == 0:
+                elapsed_time = time.time() - start_time
+                eta = (total_attempts - count) * (elapsed_time / count)
+                jackpotpercentage = jackpot / count * 100
+                winpercentage = user_win / count * 100
+                losepercentage = cpu_win / count * 100
+                tiepercentage = tie / count * 100
+                print(f"{count}/{total_attempts} - User wins: {user_win} ({winpercentage:.2f}%) - CPU wins: {cpu_win} ({losepercentage:.2f}%) - Ties: {tie} ({tiepercentage:.2f}%) - Jackpots: {jackpot} ({jackpotpercentage:.2f}%) - Elapsed time: {elapsed_time/60:.2f} minutes - ETA: {eta/60:.2f} minutes")
