@@ -71,7 +71,7 @@ def challenge(attempts, jackpotlimit, slice, iterations):
     start_time = time.time()
 
     for _ in range(iterations):
-        for i in range(1, attempts):
+        for i in range(1, attempts+1):
             count += 1
             randomness = get_randomness(i)
             user_bet = get_six_random_hex()
